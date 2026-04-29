@@ -9,56 +9,67 @@ namespace CipherTest
     internal class Calculator
     {
         static string alphabet = "abcdefghijklmnopqrstvuwxyz.,?! ";
-        public static int GetMatrixDeterminant(int[][] matrix)
+        private static int GetMatrixDeterminant(int[][] matrix)
         {
             if (matrix.Length != matrix[0].Length) return 0;
-            int mSize = matrix.Length;
-            int leftD = 0;
-            int rightD = 0;
-            int counter = 0;
-            for (int i = 0; i < mSize; i++)
+
+            int mSize = matrix[0].Length;
+
+            if (mSize == 1) return matrix[0][0];
+            if (mSize == 2) return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+
+            int res = 0;
+            for (int lr = 0; lr < 2; lr++)
             {
-                int und = 1;
-                for (int j = 0; j < mSize; j++)
+                for (int i = 0; i < mSize; i++)
                 {
-                    und *= matrix[j + counter][j + counter]; // Переписать
-                    if (und == 0) break;
+                    int mul = 1;
+                    for (int j = 0; j < mSize; j++)
+                    {
+                        int index = j + i;
+                        if (index >= mSize) index -= mSize;
+                        if (lr == 0) mul *= matrix[j][index];
+                        else mul *= matrix[index][mSize - j - 1];
+                    }
+                    if (lr == 0) res += mul;
+                    else res -= mul;
                 }
-                leftD += und;
-                counter++;
             }
-            counter = 0;
-            return 0;
+            return res;
         }
 
-        public static bool CheckMatrixDeterminantIsCorrect(int determinant)
+        private static int[][] GetMinor(int[][] matrix, int skipRow, int skipCol)
         {
-            return false;
+            int mSize = matrix.Length;
+            int[][] minor = new int[mSize - 1][];
+            int ri = 0;
+            for (int i = 0; i < mSize; i++)
+            {
+                if (i == skipRow) continue;
+                minor[ri] = new int[mSize - 1];
+                int ci = 0;
+                for (int j = 0; j < mSize; j++)
+                {
+                    if (j == skipCol) continue;
+                    minor[ri][ci++] = matrix[i][j];
+                }
+                ri++;
+            }
+            return minor;
         }
 
         public static int[][] GetInverseMatrix(int[][] matrix)
         {
-            return new int[matrix.Length][];
-        }
-
-        /*public static int[][] SubMatrix(int[][] matrix, int x, int y)
-        {
-            int[][] resultMatrix = new int[matrix.Length-1][];
-            int countX = -1;
-            int countY = -1;
-            if (matrix.Length != matrix[0].Length) return new int[matrix.Length][];
+            if (GetMatrixDeterminant(matrix) == 0) return null;
+            int[][] minorMatrix = new int [matrix.Length][];
+            for(int i = 0; i < matrix.Length; i++)
+                for (int j = 0; j < matrix[i].Length; j++)
+                    minorMatrix[i][j] = GetMatrixDeterminant(GetMinor(matrix, i, j)) * (int)Math.Pow(-1, i+j);
+            int[][] inverseMatrix = new int[matrix.Length][];
             for (int i = 0; i < matrix.Length; i++)
-            {
-                if (i == x) continue;
-                countX++;
-                for (int j = 0;  j < matrix[i].Length; j++)
-                {
-                    if (j == y) continue;
-                    countY++;
-                    resultMatrix[countX][countY] = matrix[i][j];
-                }
-            }
-            return resultMatrix;
-        }*/
+                for (int j = 0; j < matrix[i].Length; j++)
+                    inverseMatrix[i][j] = minorMatrix[matrix.Length -  i - 1][matrix.Length - j - 1];
+            return minorMatrix;
+        }
     }
 }
