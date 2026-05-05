@@ -9,7 +9,7 @@ namespace CipherTest
     /// <summary>
     /// Целочисленная матрица с операциями, необходимыми для шифра Хилла.
     /// </summary>
-    internal class Matrix
+    public class Matrix
     {
         /// <summary>Тело матрицы: строки × столбцы.</summary>
         public int[][] Body;

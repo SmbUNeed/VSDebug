@@ -23,7 +23,6 @@ namespace CipherTest
         public MainPage()
         {
             InitializeComponent();
-            Encoder.DecodeString("sdd", new Matrix(new int[3][]));
         }
     }
 }

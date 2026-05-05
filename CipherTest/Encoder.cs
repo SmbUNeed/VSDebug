@@ -9,7 +9,7 @@ namespace CipherTest
     /// <summary>
     /// Статический класс для шифрования и дешифрования строк шифром Хилла.
     /// </summary>
-    internal static class Encoder
+    public static class Encoder
     {
         private static Random random = new Random();
 
@@ -63,6 +63,7 @@ namespace CipherTest
         /// <returns>Зашифрованная строка, или null если ключ равен null.</returns>
         public static string EncodeString(string s, Matrix key)
         {
+            if (s == null) return null;
             string res = "";
             if (key == null) return null;
 
