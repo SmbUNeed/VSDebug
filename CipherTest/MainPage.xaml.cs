@@ -23,6 +23,31 @@ namespace CipherTest
         public MainPage()
         {
             InitializeComponent();
+            int[][] matrix = new int[][]
+            {
+                new int[] {1, 3, 2},
+                new int[] {2, 5, 1},
+                new int[] {9, 6, 6}
+            };
+
+            int[][] matrix1 = new int[][]
+            {
+                new int[] {5, 8, -4},
+                new int[] {6, 9, -5},
+                new int[] {4, 7, -3},
+            };
+            
+            int[][] matrix2 = new int[][]
+            {
+                new int[] {2},
+                new int[] {-3},
+                new int[] {1}
+            };
+
+            Encoder.Key = new Matrix(matrix);
+            string s = "пися";
+            int[] array = Encoder.ConvertString(s);
+            Console.WriteLine(Encoder.ConvertIntArray(array));
         }
     }
 }
