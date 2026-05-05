@@ -15,8 +15,42 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Введите строку"/>
+                <TextBox x:Name="InputBox"/>
+                <TextBlock x:Name="WarningTB" FontSize="15"/>
+                <StackPanel Orientation="Horizontal" Height="30">
+                    <TextBox x:Name="m11" Width="88" FontSize="20"/>
+                    <TextBox x:Name="m13" Width="88" FontSize="20"/>
+                    <TextBox x:Name="m12" Width="88" FontSize="20"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="30">
+                    <TextBox x:Name="m21" Width="88" FontSize="20"/>
+                    <TextBox x:Name="m23" Width="88" FontSize="20"/>
+                    <TextBox x:Name="m22" Width="88" FontSize="20"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Height="30">
+                    <TextBox x:Name="m31" Width="88" FontSize="20"/>
+                    <TextBox x:Name="m33" Width="88" FontSize="20"/>
+                    <TextBox x:Name="m32" Width="88" FontSize="20"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="100 30">
+            <Button Content="Зашифровать" Click="Encode"/>
+            <Button Content="Расшифровать" Click="Decode"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Результат: " Width="60"/>
+                <TextBox x:Name="ResultBox" Width="140"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </Page>

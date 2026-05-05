@@ -144,15 +144,17 @@ namespace HillCipherTestProject
         // TC_FUNC_07 | Отклонение матрицы с det, не взаимно простым с |алфавита|
         // ──────────────────────────────────────────────────────────────────────
         [TestMethod]
-        [Description("TC_FUNC_07 — GetInverse матрицы с НОД(det,38)>1 возвращает null")]
+        [Description("TC_FUNC_07 — GetInverse матрицы с det кратным 37 возвращает null")]
         public void TC_FUNC_07_KeyWithDetNotCoprimeToMod_GetInverseReturnsNull()
         {
-            // det([[2,1],[0,1]]) = 2, НОД(2, 37) = 2 > 1
+            // det([[37,1],[0,1]]) = 37, НОД(37, 37) = 37 > 1 — необратима
+            // Алфавит длиной 37 (простое число) — единственный способ сломать
+            // обратимость: det должен быть кратен 37
             Matrix key = KeyNotCoprime;
 
             Assert.AreEqual(37, key.GetDeterminant());
             Assert.IsNull(key.GetInverse(Encoder.Alphabet.Length),
-                "GetInverse должен вернуть null, если det не взаимно прост с размером алфавита");
+                "GetInverse должен вернуть null, если det кратен размеру алфавита");
         }
 
         // ──────────────────────────────────────────────────────────────────────
@@ -207,12 +209,11 @@ namespace HillCipherTestProject
         // TC_NEG_02 | Передача null в модуль шифрования
         // ──────────────────────────────────────────────────────────────────────
         [TestMethod]
-        [Description("TC_NEG_02 — EncodeString(null, key) бросает исключение, не краш")]
-        [ExpectedException(typeof(NullReferenceException))]
+        [Description("TC_NEG_02 — EncodeString(null, key) возвращает null")]
         public void TC_NEG_02_NullText_ThrowsException()
         {
-            // null-строка должна вызывать исключение (NullReferenceException при обращении к .Length)
-            Encoder.EncodeString(null, Key2x2);
+            // null-строка должна вернуть null
+            Assert.IsNull(Encoder.EncodeString(null, Key2x2));
         }
 
         // ──────────────────────────────────────────────────────────────────────
