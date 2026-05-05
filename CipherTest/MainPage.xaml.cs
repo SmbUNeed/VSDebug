@@ -44,10 +44,12 @@ namespace CipherTest
                 new int[] {1}
             };
 
-            Encoder.Key = new Matrix(matrix);
             string s = "пися";
-            int[] array = Encoder.ConvertString(s);
-            Console.WriteLine(Encoder.ConvertIntArray(array));
+            Matrix m = new Matrix(matrix);
+            string encoded = Encoder.EncodeString(s, m);
+            string decoded = Encoder.DecodeString(encoded, m);
+
+            Console.WriteLine(encoded + "\n" + decoded);
         }
     }
 }

@@ -30,6 +30,25 @@ namespace CipherTest
             return res;
         }
 
+        private static int ModInverse(int a, int mod)
+        {
+            a = ((a % mod) + mod) % mod;
+            if (a == 0) return -1;
+
+            int old_r = a, r = mod;
+            int old_s = 1, s = 0;
+
+            while (r != 0)
+            {
+                int q = old_r / r;
+                (old_r, r) = (r, old_r - q * r);
+                (old_s, s) = (s, old_s - q * s);
+            }
+
+            if (old_r != 1) return -1;
+            return (old_s % mod + mod) % mod;
+        }
+
         public Matrix GetMinor(int skipRow, int skipCol)
         {
             int mSize = Body.Length;
@@ -50,27 +69,36 @@ namespace CipherTest
             return new Matrix(minor);
         }
 
-        public Matrix GetInverse(int[][] matrix)
+        public Matrix GetAdjugate()
         {
-            if (GetDeterminant() == 0) return null;
-            int[][] minorMatrix = new int[matrix.Length][];
-            for (int i = 0; i < matrix.Length; i++) {
-                minorMatrix[i] = new int[matrix[i].Length];
-                for (int j = 0; j < matrix[i].Length; j++) {
-                    minorMatrix[i][j] = GetMinor(i, j).GetDeterminant() * (int)Math.Pow(-1, i + j);
-                }
-            }
-
-            int[][] inverseMatrix = new int[matrix.Length][];
-            for (int i = 0; i < matrix.Length; i++)
+            int[][] res = new int[Body.Length][];
+            for (int i = 0; i < Body.Length; i++)
             {
-                inverseMatrix[i] = new int[matrix.Length];
-                for (int j = 0; j < matrix[i].Length; j++)
+                res[i] = new int[Body[i].Length];
+                for (int j = 0; j < Body[i].Length; j++)
                 {
-                    inverseMatrix[i][j] = minorMatrix[j][i];
+                    res[i][j] = GetMinor(i, j).GetDeterminant() * (int)Math.Pow(-1, i + j);
                 }
             }
-            return new Matrix (inverseMatrix);
+            return new Matrix(res);
+        }
+
+        public Matrix GetInverse(int mod)
+        {
+            int det = ((GetDeterminant() % mod) + mod) % mod;
+            int detInv = ModInverse(det, mod);
+            if (detInv == -1) return null;
+
+            Matrix adj = GetAdjugate().Transponate();
+
+            int[][] res = new int[Body.Length][];
+            for (int i = 0; i < Body.Length; i++)
+            {
+                res[i] = new int[Body[i].Length];
+                for (int j = 0; j < Body[i].Length; j++)
+                    res[i][j] = ((adj.Body[i][j] * detInv) % mod + mod) % mod;
+            }
+            return new Matrix(res);
         }
 
         public static Matrix Multiply(int[][] matrix1, int[][] matrix2)
@@ -89,9 +117,38 @@ namespace CipherTest
                     }
                 }
             }
-            Console.WriteLine($"Multiply: \n{Stringify(resultMatrix)}");
             
             return new Matrix(resultMatrix);
+        }
+
+        public static int[] MultiplyWithKey(int[][] matrix1, int[] stringEncode, int mod)
+        {
+            int strLen = stringEncode.Length;
+            int[][] matrix = new int[strLen][];
+
+            for (int i = 0; i < strLen; i++)
+                matrix[i] = new int[] { stringEncode[i] };
+
+            Matrix multiplied = Multiply(matrix1, matrix);
+
+            int[] result = new int[strLen];
+            for (int i = 0; i < strLen; i++)
+                result[i] = ((multiplied.Body[i][0] % mod) + mod) % mod;
+            return result;
+        }
+
+        public Matrix Transponate()
+        {
+            int[][] result = new int[Body.Length][];
+            for(int i = 0; i < Body.Length; i++)
+            {
+                result[i] = new int[Body[0].Length];
+                for(int j = 0;j < Body[0].Length; j++)
+                {
+                    result[i][j] = Body[j][i];
+                }
+            }
+            return new Matrix(result);
         }
 
         public override string ToString()
